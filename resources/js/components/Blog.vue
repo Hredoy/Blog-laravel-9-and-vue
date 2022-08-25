@@ -2,17 +2,17 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
-                <h4 class="mb-5">Laravel Vue SPA - shouts.dev</h4>
+                <h4 class="mb-5">Blog</h4>
                 <table id="table" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Email</th>
+                            <th>Title</th>
+                            <th>Description</th>
                             <th class="check">
                                 Action
                                 <a
                                     data-toggle="modal"
-                                    data-target="#user"
+                                    data-target="#post"
                                     style="
                                         float: right;
                                         cursor: pointer;
@@ -22,26 +22,26 @@
                                     @click="openModalWindow"
                                     class="btn btn-sm btn-warning py-0"
                                 >
-                                    <i class="fa fa-plus-square"> Add User </i>
+                                    <i class="fa fa-plus-square"> Add Post </i>
                                 </a>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="user in users.data" :key="user.id">
-                            <td>{{ user.name }}</td>
-                            <td>{{ user.email }}</td>
+                        <tr v-for="post in posts.data" :key="post.id">
+                            <td>{{ post.title }}</td>
+                            <td>{{ post.description }}</td>
                             <td class="check">
                                 <a
                                     title="Edit category"
                                     class="btn btn-sm btn-dark py-0"
                                     style="color: white; cursor: pointer"
-                                    @click="edit(user)"
+                                    @click="edit(post)"
                                     >Edit</a
                                 >
                                 <a
                                     class="btn btn-sm btn-danger py-0"
-                                    @click="deleteUser(user.id)"
+                                    @click="deletePost(post.id)"
                                     style="color: white"
                                     >Delete</a
                                 >
@@ -49,13 +49,13 @@
                         </tr>
                     </tbody>
                     <pagination
-                        :data="users"
+                        :data="posts"
                         @pagination-change-page="getResults"
                     ></pagination>
                 </table>
                 <div
                     class="modal fade"
-                    id="user"
+                    id="post"
                     tabindex="-1"
                     role="dialog"
                     aria-labelledby="addNewLabel"
@@ -68,81 +68,59 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 v-if="form.id" class="modal-title">
-                                    Update User
+                                    Update Post
                                 </h5>
-                                <h5 v-else class="modal-title">Add New User</h5>
+                                <h5 v-else class="modal-title">Add New Post</h5>
                             </div>
 
                             <form
                                 @submit.prevent="
-                                    form.id ? updateUser() : createUser()
+                                    form.id ? updatePost() : createPost()
                                 "
                             >
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <input
-                                            v-model="form.name"
+                                            v-model="form.title"
                                             type="text"
-                                            name="name"
-                                            placeholder="Name"
+                                            name="title"
+                                            placeholder="title"
                                             class="input2 form-control"
                                             :class="{
-                                                'is-invalid': errors.name,
+                                                'is-invalid': errors.title,
                                             }"
-                                            data-validate="User name is required"
+                                            data-validate="title is required"
                                         />
                                         <span
                                             class="focus-input2"
-                                            data-placeholder="Company Name"
+                                            data-placeholder="title"
                                         ></span>
                                         <span
                                             class="text-danger"
-                                            v-if="errors.name"
-                                            >{{ errors.name[0] }}</span
+                                            v-if="errors.title"
+                                            >{{ errors.title[0] }}</span
                                         >
                                     </div>
                                     <div class="form-group">
                                         <input
-                                            v-model="form.email"
+                                            v-model="form.description"
                                             type="text"
-                                            name="email"
-                                            placeholder="Email"
+                                            name="description"
+                                            placeholder="description"
                                             class="input2 form-control"
                                             :class="{
-                                                'is-invalid': errors.email,
+                                                'is-invalid': errors.description,
                                             }"
-                                            data-validate="User Email is required"
+                                            data-validate="description is required"
                                         />
                                         <span
                                             class="focus-input2"
-                                            data-placeholder="User Email"
+                                            data-placeholder="description"
                                         ></span>
                                         <span
                                             class="text-danger"
-                                            v-if="errors.email"
-                                            >{{ errors.email[0] }}</span
-                                        >
-                                    </div>
-                                    <div class="form-group">
-                                        <input
-                                            v-model="form.password"
-                                            type="password"
-                                            name="password"
-                                            placeholder="password"
-                                            class="input2 form-control"
-                                            :class="{
-                                                'is-invalid': errors.password,
-                                            }"
-                                            data-validate="Password is required"
-                                        />
-                                        <span
-                                            class="focus-input2"
-                                            data-placeholder="Password"
-                                        ></span>
-                                        <span
-                                            class="text-danger"
-                                            v-if="errors.password"
-                                            >{{ errors.password[0] }}</span
+                                            v-if="errors.description"
+                                            >{{ errors.description[0] }}</span
                                         >
                                     </div>
                                 </div>
@@ -179,16 +157,27 @@
 </template>
 
 <script>
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true
+});
+
+window.Toast = Toast;
+
+let Fire = new Vue()
+window.Fire = Fire;
 export default {
     data() {
         return {
-            users: {},
+            posts: {},
             errors: [],
             form: {
                 id: "",
-                name: "",
-                email: "",
-                password: "",
+                title: "",
+                description: "",
             },
         };
     },
@@ -201,28 +190,28 @@ export default {
         },
         openModalWindow() {
             this.resetForm();
-            $("#user").modal("show");
+            $("#post").modal("show");
         },
-        getUsers() {
-            axios.get("/users").then((data) => (this.users = data.data.users));
+        getPosts() {
+            axios.get("/api/posts").then((data) => (this.posts = data.data.posts));
         },
         getResults(page = 1) {
-            axios.get("/users?page=" + page).then((response) => {
-                this.users = response.data.users;
+            axios.get("/api/posts?page=" + page).then((response) => {
+                this.posts = response.data.posts;
             });
         },
-        createUser() {
+        createPost() {
             axios
-                .post("/users", this.form)
+                .post("/api/posts", this.form)
                 .then(() => {
-                    Fire.$emit("load_user");
+                    Fire.$emit("load_post");
 
                     Toast.fire({
                         icon: "success",
-                        title: "User created successfully",
+                        title: "post created successfully",
                     });
 
-                    $("#user").modal("hide");
+                    $("#post").modal("hide");
                 })
                 .catch((error) => {
                     console.log("Error......");
@@ -231,23 +220,23 @@ export default {
                     }
                 });
         },
-        edit(user) {
+        edit(post) {
             this.resetForm();
-            $("#user").modal("show");
-            this.form = user;
+            $("#post").modal("show");
+            this.form = post;
         },
-        updateUser() {
+        updatePost() {
             axios
-                .put("/users/" + this.form.id, this.form)
+                .put("/api/posts/" + this.form.id, this.form)
                 .then(() => {
                     Toast.fire({
                         icon: "success",
-                        title: "User updated successfully",
+                        title: "post updated successfully",
                     });
 
-                    Fire.$emit("load_user");
+                    Fire.$emit("load_post");
 
-                    $("#user").modal("hide");
+                    $("#post").modal("hide");
                 })
                 .catch((error) => {
                     console.log("Error.....");
@@ -256,7 +245,7 @@ export default {
                     }
                 });
         },
-        deleteUser(id) {
+        deletePost(id) {
             Swal.fire({
                 title: "Are you sure?",
                 text: "You won't be able to revert this!",
@@ -268,15 +257,15 @@ export default {
             }).then((result) => {
                 if (result.value) {
                     axios
-                        .delete("/users/" + id)
+                        .delete("/api/posts/" + id)
                         .then((response) => {
                             Swal.fire(
                                 "Deleted!",
-                                "User deleted successfully",
+                                "post deleted successfully",
                                 "success"
                             );
 
-                            Fire.$emit("load_user");
+                            Fire.$emit("load_post");
                         })
                         .catch(() => {
                             Swal.fire({
@@ -290,10 +279,10 @@ export default {
         },
     },
     created() {
-        this.getUsers();
+        this.getPosts();
 
-        Fire.$on("load_user", () => {
-            this.getUsers();
+        Fire.$on("load_post", () => {
+            this.getPosts();
         });
     },
 };

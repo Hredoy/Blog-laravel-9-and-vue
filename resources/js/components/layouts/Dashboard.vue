@@ -11,7 +11,7 @@
                         <router-link :to="{name:'dashboard'}" class="nav-link">Home <span class="sr-only">(current)</span></router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link :to="{name:'blog'}" class="nav-link">Blog</router-link>
+                        <router-link :to="{name:'post'}" class="nav-link">Blog</router-link>
                     </li>
                 </ul>
                 <div class="ml-auto">

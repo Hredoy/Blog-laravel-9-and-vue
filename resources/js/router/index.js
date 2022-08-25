@@ -15,6 +15,7 @@ const DahboardLayout = () => import('../components/Layouts/Dashboard.vue' /* web
 
 /* Authenticated Component */
 const Dashboard = () => import('../components/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
+const Blog = () => import('../components/Blog.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
 /* Authenticated Component */
 
 
@@ -53,9 +54,9 @@ const Routes = [
                 }
             },
             {
-                name:"blog",
+                name:"post",
                 path: '/blog',
-                component: Dashboard,
+                component: Blog,
                 meta:{
                     title:`blog`
                 }

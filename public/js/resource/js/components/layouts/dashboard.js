@@ -116,7 +116,7 @@ var render = function render() {
     staticClass: "nav-link",
     attrs: {
       to: {
-        name: "blog"
+        name: "post"
       }
     }
   }, [_vm._v("Blog")])], 1)]), _vm._v(" "), _c("div", {
