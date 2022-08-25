@@ -1,6 +1,5 @@
-# SPA Authentication using Laravel Sanctum and Vue.js
+# SPA BLOG AND AUTHENTICATION(Sanctum) using Laravel and Vue.js
 
-### [Visit Blog](https://techvblogs.com/blog/spa-authentication-laravel-sanctum-vuejs?ref=repo)
 
 #### Install Packages
 
@@ -32,9 +31,3 @@ php artisan serve
 npm run dev
 ```
 
-# Connect with Us
-
--   [Site](https://techvblogs.com/?ref=githubrepo)
--   [Twitter](https://twitter.com/techvblogs)
--   [Facebook](https://facebook.com/techvblogs)
--   [Linkedin](https://www.linkedin.com/company/techvblogs)
